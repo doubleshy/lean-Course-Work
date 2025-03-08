@@ -1,21 +1,21 @@
 variables (A : Type)
 variables (RR : A → A → Prop)
-variables (PP : A → Prop)  -- 声明 PP 是 A 上的一个谓词
+variables (PP : A → Prop)  -- Declare PP as a predicate on A
 
 
 
 theorem ex6q02 : ∀ x y : A, x = y → RR x y → RR x x :=
 begin
-  -- **第一步：引入变量和假设**
-  assume x y,       -- 1. 让 x 和 y 是 A 的任意元素
-  assume hxy,       -- 2. 假设 x = y
-  assume hrxy,      -- 3. 假设 RR x y 成立
+  -- **Step 1: Introduce variables and assumptions**
+  assume x y,       -- 1. Assume x and y are arbitrary elements of A
+  assume hxy,       -- 2. Assume x = y
+  assume hrxy,      -- 3. Assume RR x y holds
 
-  -- **第二步：使用 `cases` 替换 `y` 为 `x`**
-  cases hxy,        -- 让 `y` 在所有地方替换成 `x`
+  -- **Step 2: Use `cases` to replace `y` with `x`**
+  cases hxy,        -- Replace `y` with `x` everywhere
   
-  -- **第三步：目标变成 `RR x x`，直接使用 `hrxy`**
-  exact hrxy,       -- 直接完成证明
+  -- **Step 3: The goal becomes `RR x x`, use `hrxy` directly**
+  exact hrxy,       -- Directly complete the proof
 end
 
 
@@ -26,27 +26,27 @@ end
 
 theorem ex6q04 : ∀ x y z : A, x ≠ y → (x ≠ z ∨ y ≠ z) :=
 begin
-  -- **第一步：引入变量和假设**
-  assume x y z,  -- 让 x, y, z 是 A 中的任意元素
-  assume hxy,    -- 假设 x ≠ y，即 ¬(x = y)
+  -- **Step 1: Introduce variables and assumptions**
+  assume x y z,    -- Assume x, y, z are arbitrary elements of A
+  assume hxy,      -- Assume x ≠ y, i.e., ¬(x = y)
 
-  -- **第二步：使用经典逻辑 (排中律) 进行分类讨论**
-  cases classical.em (x = z) with hxz hxz,  -- `hxz : x = z` 或 `hxz : x ≠ z`
+  -- **Step 2: Use classical logic (Law of Excluded Middle)**
+  cases classical.em (x = z) with hxz hxz,  -- `hxz : x = z` or `hxz : x ≠ z`
   
-  -- **情况 1: 假设 `x = z`，需要推出 `y ≠ z`**
-  right, -- 选择 `∨` 的右分支，目标是证明 `y ≠ z`
-  assume hyz, -- 假设 `y = z`，尝试推导矛盾
+  -- **Case 1: Assume `x = z`, need to show `y ≠ z`**
+  right,        -- Choose the right branch of `∨`, goal is to show `y ≠ z`
+  assume hyz,   -- Assume `y = z`, try to derive a contradiction
 
-  -- **第三步：手动推导 `x = y`**
-  cases hxz,   -- 用 `hxz : x = z` 直接替换 x 为 z
-  cases hyz,   -- 用 `hyz : y = z` 直接替换 y 为 z
+  -- **Step 3: Derive `x = y` manually**
+  cases hxz,    -- Replace x with z using `hxz : x = z`
+  cases hyz,    -- Replace y with z using `hyz : y = z`
 
-  -- **推出矛盾**
-  contradiction, -- 但 `hxy : x ≠ y`，所以 `x = y` 矛盾！
+  -- **Derive contradiction**
+  contradiction, -- But `hxy : x ≠ y`, so `x = y` is a contradiction!
 
-  -- **情况 2: 假设 `x ≠ z`，直接推出结论**
-  left,  -- 选择 `∨` 的左分支，目标是证明 `x ≠ z`
-  exact hxz, -- 直接使用 `hxz : x ≠ z`
+  -- **Case 2: Assume `x ≠ z`, directly conclude**
+  left,        -- Choose the left branch of `∨`, goal is to show `x ≠ z`
+  exact hxz,   -- Directly use `hxz : x ≠ z`
 end
 
 
@@ -57,24 +57,24 @@ end
 
 theorem ex6q05 : ¬ (∀ x : A, PP x) → ∃ x : A, ¬ PP x :=
 begin
-  -- **第一步：引入假设**
-  assume h,  -- 设 h : ¬ (∀ x : A, PP x)，即 "不是所有 x 都满足 PP x"
+  -- **Step 1: Introduce assumption**
+  assume h,  -- Assume h : ¬ (∀ x : A, PP x), meaning "not all x satisfy PP x"
 
-  -- **第二步：使用排中律进行分析**
+  -- **Step 2: Use the Law of Excluded Middle**
   cases classical.em (∃ x : A, ¬ PP x) with hex hex,
   
-  -- **情况 1：假设 ∃ x : A, ¬ PP x 成立**
-  exact hex,  -- 直接返回 hex 作为结论
+  -- **Case 1: Assume ∃ x : A, ¬ PP x holds**
+  exact hex,  -- Directly use hex as the conclusion
 
-  -- **情况 2：假设 ¬ ∃ x : A, ¬ PP x**
-  -- 这意味着 "所有 x 都满足 PP x"
-  have hforall : ∀ x : A, PP x,  -- 设 ∀ x, PP x
+  -- **Case 2: Assume ¬ ∃ x : A, ¬ PP x**
+  -- This implies "all x satisfy PP x"
+  have hforall : ∀ x : A, PP x,  -- Assume ∀ x, PP x
   assume x,
-  by_contradiction hnp,  -- 假设 PP x 不成立
-  apply hex,             -- 但 hex 是 ¬ ∃ x, ¬ PP x
-  existsi x,             -- 但是我们确实找到了一个这样的 x，使 PP x 不成立
-  exact hnp,             -- 这与 hex 矛盾！
+  by_contradiction hnp,  -- Assume PP x does not hold
+  apply hex,             -- But hex is ¬ ∃ x, ¬ PP x
+  existsi x,             -- We found an x where PP x does not hold
+  exact hnp,             -- This contradicts hex!
 
-  -- **推出矛盾**
-  contradiction,  -- 但 h : ¬ (∀ x, PP x)，矛盾！
+  -- **Derive contradiction**
+  contradiction,  -- But h : ¬ (∀ x, PP x), contradiction!
 end
