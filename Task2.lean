@@ -1,5 +1,5 @@
-variables (A : Type) 
-variables (PP QQ : A → Prop)  
+variables A : Type 
+variables PP QQ : A → Prop  
 -- 声明 A 是一个类型，PP 和 QQ 是 A 上的性质
 
 theorem dm_pred : ¬ (∃ x : A, (PP x ∨ QQ x)) → ∀ x : A, (¬ PP x ∧ ¬ QQ x) :=
