@@ -22,7 +22,7 @@ end
 
 
 
-
+open classical
 
 theorem ex6q04 : ∀ x y z : A, x ≠ y → (x ≠ z ∨ y ≠ z) :=
 begin
@@ -31,7 +31,7 @@ begin
   assume hxy,      -- Assume x ≠ y, i.e., ¬(x = y)
 
   -- **Step 2: Use classical logic (Law of Excluded Middle)**
-  cases classical.em (x = z) with hxz hxz,  -- `hxz : x = z` or `hxz : x ≠ z`
+  cases em (x = z) with hxz hxz,  -- `hxz : x = z` or `hxz : x ≠ z`
   
   -- **Case 1: Assume `x = z`, need to show `y ≠ z`**
   right,        -- Choose the right branch of `∨`, goal is to show `y ≠ z`
@@ -61,7 +61,7 @@ begin
   assume h,  -- Assume h : ¬ (∀ x : A, PP x), meaning "not all x satisfy PP x"
 
   -- **Step 2: Use the Law of Excluded Middle**
-  cases classical.em (∃ x : A, ¬ PP x) with hex hex,
+  cases em (∃ x : A, ¬ PP x) with hex hex,
   
   -- **Case 1: Assume ∃ x : A, ¬ PP x holds**
   exact hex,  -- Directly use hex as the conclusion
