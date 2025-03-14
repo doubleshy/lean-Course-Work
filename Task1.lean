@@ -1,21 +1,21 @@
 variables (A : Type)
 variables (RR : A → A → Prop)
-variables (PP : A → Prop)  -- Declare PP as a predicate on A
+variables (PP : A → Prop)  -- 声明 PP 是 A 上的一个谓词
 
 
 
 theorem ex6q02 : ∀ x y : A, x = y → RR x y → RR x x :=
 begin
-  -- **Step 1: Introduce variables and assumptions**
-  assume x y,       -- 1. Assume x and y are arbitrary elements of A
-  assume hxy,       -- 2. Assume x = y
-  assume hrxy,      -- 3. Assume RR x y holds
+  -- **第一步：引入变量和假设**
+  assume x y,       -- 1. 让 x 和 y 是 A 的任意元素
+  assume hxy,       -- 2. 假设 x = y
+  assume hrxy,      -- 3. 假设 RR x y 成立
 
-  -- **Step 2: Use `cases` to replace `y` with `x`**
-  cases hxy,        -- Replace `y` with `x` everywhere
+  -- **第二步：使用 `cases` 替换 `y` 为 `x`**
+  cases hxy,        -- 让 `y` 在所有地方替换成 `x`
   
-  -- **Step 3: The goal becomes `RR x x`, use `hrxy` directly**
-  exact hrxy,       -- Directly complete the proof
+  -- **第三步：目标变成 `RR x x`，直接使用 `hrxy`**
+  exact hrxy,       -- 直接完成证明
 end
 
 
@@ -23,43 +23,31 @@ end
 
 
 
-
-
-
-
-
-
-
-open classical
 
 theorem ex6q04 : ∀ x y z : A, x ≠ y → (x ≠ z ∨ y ≠ z) :=
 begin
-  assume x y z,  -- Step 1: Let x, y, and z be arbitrary elements of A
-  assume hxy,    -- Step 2: Assume x ≠ y, which means ¬(x = y)
-  cases em (x = z) with hxz hxz,  -- Step 3: Perform case analysis on (x = z)
+  -- **第一步：引入变量和假设**
+  assume x y z,  -- 让 x, y, z 是 A 中的任意元素
+  assume hxy,    -- 假设 x ≠ y，即 ¬(x = y)
+
+  -- **第二步：使用经典逻辑 (排中律) 进行分类讨论**
+  cases classical.em (x = z) with hxz hxz,  -- `hxz : x = z` 或 `hxz : x ≠ z`
   
-   right, -- Step 4: Choose the right branch of the disjunction (y ≠ z)
-    assume hyz, -- Step 5: Assume y = z and try to derive a contradiction
-    apply hxy, -- Step 6: Goal is to prove x = y
-    rewrite hxz,  -- Step 7: Substitute x = z
-    rewrite hyz,  -- Step 8: Substitute y = z, which results in x = y, contradicting hxy
-  
-   left,  -- Step 9: Choose the left branch of the disjunction (x ≠ z)
-    exact hxz,  -- Step 10: Directly use hxz : x ≠ z
+  -- **情况 1: 假设 `x = z`，需要推出 `y ≠ z`**
+  right, -- 选择 `∨` 的右分支，目标是证明 `y ≠ z`
+  assume hyz, -- 假设 `y = z`，尝试推导矛盾
+
+  -- **第三步：手动推导 `x = y`**
+  cases hxz,   -- 用 `hxz : x = z` 直接替换 x 为 z
+  cases hyz,   -- 用 `hyz : y = z` 直接替换 y 为 z
+
+  -- **推出矛盾**
+  contradiction, -- 但 `hxy : x ≠ y`，所以 `x = y` 矛盾！
+
+  -- **情况 2: 假设 `x ≠ z`，直接推出结论**
+  left,  -- 选择 `∨` 的左分支，目标是证明 `x ≠ z`
+  exact hxz, -- 直接使用 `hxz : x ≠ z`
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -68,31 +56,32 @@ variables P  : Prop
 
 constant raa : ¬ ¬ P → P
 
--- Proving theorem ex6q05
+-- 证明定理 ex6q05
 theorem ex6q05 : ¬ (∀ x : A, PP x) → ∃ x : A, ¬ PP x :=
 begin
-  -- **Step 1: Assume the premise**
-  assume h,  -- Assume h : ¬ (∀ x, PP x), meaning "not all x satisfy PP x"
+  -- **第一步：假设命题的前提**
+  assume h,  -- 假设 h : ¬ (∀ x, PP x)，即 "并非所有 x 都满足 PP x"
 
-  -- **Step 2: Use raa (reductio ad absurdum)**
-  apply raa,  -- Our goal is to prove ∃ x, ¬ PP x, using raa (proof by contradiction)
+  -- **第二步：使用 raa 进行反证**
+  apply raa,  -- 目标是推出 ∃ x, ¬ PP x，我们用 raa 进行反证法
 
-  -- **Step 3: Assume the negation of the conclusion**
-  assume h1,  -- Assume h1 : ¬ (∃ x, ¬ PP x), meaning "there does not exist an x such that ¬ PP x"
+  -- **第三步：假设结论不成立**
+  assume h1,  -- 假设 h1 : ¬ (∃ x, ¬ PP x)，即 "所有 x 都满足 ¬¬ PP x"
 
-  -- **Step 4: Try to derive a contradiction**
-  apply h,  -- To derive a contradiction, we attempt to prove ∀ x, PP x
+  -- **第四步：尝试推出矛盾**
+  apply h,    -- 目标是推出矛盾，证明 h1 不能成立
 
-  -- **Step 5: Introduce an arbitrary x**
-  assume x,  -- Let x be an arbitrary element of A
+  -- **第五步：引入任意 x**
+  assume x,   -- 任取 x
 
-  -- **Step 6: Use raa to establish PP x**
-  apply raa,  -- Since we need to prove PP x, we use raa: ¬¬ PP x → PP x
-  assume h2,  -- Assume h2 : ¬ PP x
+  -- **第六步：再次使用 raa 证明 PP x**
+  apply raa,  -- 利用 ¬¬PP x → PP x
+  assume h2,  -- 假设 h2 : ¬ PP x
 
-  -- **Step 7: Construct a contradiction**
-  apply h1,  -- Recall h1 : ¬ (∃ x, ¬ PP x), meaning "there is no x such that ¬ PP x"
-  existsi x,  -- However, we have found an x such that ¬ PP x
-  exact h2,  -- This contradicts h1, so h1 must be false, proving ∃ x, ¬ PP x
+  -- **第七步：构造矛盾**
+  apply h1,   -- 这里 h1 : ¬ (∃ x, ¬ PP x)，即 "不存在满足 ¬PP x 的 x"
+  existsi x,  -- 但我们构造出了一个这样的 x，使得 ¬ PP x 成立
+  exact h2,   -- 这与 h1 矛盾，因此 h1 不能成立，最终推出 ∃ x, ¬ PP x
 end
+
 
