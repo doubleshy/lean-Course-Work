@@ -67,7 +67,6 @@ variables P  : Prop
 
 constant raa : ¬ ¬ P → P
 
--- Proving theorem ex6q05
 theorem ex6q05 : ¬ (∀ x : A, PP x) → ∃ x : A, ¬ PP x :=
 begin
   -- Step 1: Assume the premise
