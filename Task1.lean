@@ -55,26 +55,35 @@ end
 
 
 
+variables P  : Prop
+
+constant raa : ¬ ¬ P → P
+
+-- Proving theorem ex6q05
 theorem ex6q05 : ¬ (∀ x : A, PP x) → ∃ x : A, ¬ PP x :=
 begin
-  -- **Step 1: Introduce assumption**
-  assume h,  -- Assume h : ¬ (∀ x : A, PP x), meaning "not all x satisfy PP x"
+  -- **Step 1: Assume the premise**
+  assume h,  -- Assume h : ¬ (∀ x, PP x), meaning "not all x satisfy PP x"
 
-  -- **Step 2: Use the Law of Excluded Middle**
-  cases em (∃ x : A, ¬ PP x) with hex hex,
-  
-  -- **Case 1: Assume ∃ x : A, ¬ PP x holds**
-  exact hex,  -- Directly use hex as the conclusion
+  -- **Step 2: Use raa (reductio ad absurdum)**
+  apply raa,  -- Our goal is to prove ∃ x, ¬ PP x, using raa (proof by contradiction)
 
-  -- **Case 2: Assume ¬ ∃ x : A, ¬ PP x**
-  -- This implies "all x satisfy PP x"
-  have hforall : ∀ x : A, PP x,  -- Assume ∀ x, PP x
-  assume x,
-  by_contradiction hnp,  -- Assume PP x does not hold
-  apply hex,             -- But hex is ¬ ∃ x, ¬ PP x
-  existsi x,             -- We found an x where PP x does not hold
-  exact hnp,             -- This contradicts hex!
+  -- **Step 3: Assume the negation of the conclusion**
+  assume h1,  -- Assume h1 : ¬ (∃ x, ¬ PP x), meaning "there does not exist an x such that ¬ PP x"
 
-  -- **Derive contradiction**
-  contradiction,  -- But h : ¬ (∀ x, PP x), contradiction!
+  -- **Step 4: Try to derive a contradiction**
+  apply h,  -- To derive a contradiction, we attempt to prove ∀ x, PP x
+
+  -- **Step 5: Introduce an arbitrary x**
+  assume x,  -- Let x be an arbitrary element of A
+
+  -- **Step 6: Use raa to establish PP x**
+  apply raa,  -- Since we need to prove PP x, we use raa: ¬¬ PP x → PP x
+  assume h2,  -- Assume h2 : ¬ PP x
+
+  -- **Step 7: Construct a contradiction**
+  apply h1,  -- Recall h1 : ¬ (∃ x, ¬ PP x), meaning "there is no x such that ¬ PP x"
+  existsi x,  -- However, we have found an x such that ¬ PP x
+  exact h2,  -- This contradicts h1, so h1 must be false, proving ∃ x, ¬ PP x
 end
+
