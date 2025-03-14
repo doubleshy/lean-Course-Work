@@ -3,6 +3,7 @@ variables (RR : A → A → Prop)
 variables (PP : A → Prop)  -- Declare PP as a predicate on A
 
 
+
 theorem ex6q02 : ∀ x y : A, x = y → RR x y → RR x x :=
 begin
   -- **Step 1: Introduce variables and assumptions**
