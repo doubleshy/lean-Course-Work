@@ -29,18 +29,28 @@ open classical
 
 theorem ex6q04 : ∀ x y z : A, x ≠ y → (x ≠ z ∨ y ≠ z) :=
 begin
-  assume x y z,  -- Step 1: Let x, y, and z be arbitrary elements of A
-  assume hxy,    -- Step 2: Assume x ≠ y, which means ¬(x = y)
-  cases em (x = z) with hxz hxz,  -- Step 3: Perform case analysis on (x = z)
+  -- Step 1: Let x, y, and z be arbitrary elements of A
+  assume x y z,  
+  -- Step 2: Assume x ≠ y, which means ¬(x = y)
+  assume hxy,    
+  -- Step 3: Perform case analysis on (x = z) 
+  cases em (x = z) with hxz hxz,  
+
+  -- Step 4: Choose the right branch of the disjunction (y ≠ z)
+  right, 
+  -- Step 5: Assume y = z and try to derive a contradiction
+  assume hyz, 
+  -- Step 6: Goal is to prove x = y
+  apply hxy, 
+  -- Step 7: Substitute x = z
+  rewrite hxz,  
+  -- Step 8: Substitute y = z, which results in x = y, contradicting hxy
+  rewrite hyz,  
   
-   right, -- Step 4: Choose the right branch of the disjunction (y ≠ z)
-    assume hyz, -- Step 5: Assume y = z and try to derive a contradiction
-    apply hxy, -- Step 6: Goal is to prove x = y
-    rewrite hxz,  -- Step 7: Substitute x = z
-    rewrite hyz,  -- Step 8: Substitute y = z, which results in x = y, contradicting hxy
-  
-   left,  -- Step 9: Choose the left branch of the disjunction (x ≠ z)
-    exact hxz,  -- Step 10: Directly use hxz : x ≠ z
+  -- Step 9: Choose the left branch of the disjunction (x ≠ z)
+  left,  
+  -- Step 10: Directly use hxz : x ≠ z
+  exact hxz,  
 end
 
 
