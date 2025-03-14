@@ -1,23 +1,25 @@
 variables A : Type 
 variables PP QQ : A → Prop  
--- 声明 A 是一个类型，PP 和 QQ 是 A 上的性质
 
 theorem dm_pred : ¬ (∃ x : A, (PP x ∨ QQ x)) → ∀ x : A, (¬ PP x ∧ ¬ QQ x) :=
 begin
-  assume h x,    -- 假设 h : ¬ (∃ x : A, (PP x ∨ QQ x))，并取任意 x : A
-  constructor,   -- 目标是证明 ¬ PP x ∧ ¬ QQ x，使用 constructor 拆成两部分
+  -- Step 1: Introduce assumptions and goal
+  assume h x,      -- 1. Assume h : ¬ (∃ x : A, (PP x ∨ QQ x))  
+                   --    and take an arbitrary x : A
+  constructor,     -- 2. Goal is to prove ¬ PP x ∧ ¬ QQ x,
+                   --    so use constructor to split it into two parts
 
-  -- 证明 ¬ PP x
-  assume hp,     -- 假设 PP x 为真
-  apply h,       -- 试图利用 h : ¬∃ x : A, (PP x ∨ QQ x) 导出矛盾
-  constructor,   -- 构造 ∃ x : A, (PP x ∨ QQ x)
-  left,          -- 选择 ∨ 的左侧，即 PP x
-  exact hp,      -- 直接使用假设 PP x
+  -- Step 2: Prove ¬ PP x
+  assume hp,       -- 1. Assume PP x holds
+  apply h,         -- 2. Try to derive a contradiction using h
+  constructor,     -- 3. Construct an existential statement ∃ x, (PP x ∨ QQ x)
+  left,            -- 4. Choose the left side of the disjunction (PP x)
+  exact hp,        -- 5. Directly use the assumption PP x
 
-  -- 证明 ¬ QQ x
-  assume hq,     -- 假设 QQ x 为真
-  apply h,       -- 试图利用 h : ¬∃ x : A, (PP x ∨ QQ x) 导出矛盾
-  constructor,   -- 构造 ∃ x : A, (PP x ∨ QQ x)
-  right,         -- 选择 ∨ 的右侧，即 QQ x
-  exact hq,      -- 直接使用假设 QQ x
+  -- Step 3: Prove ¬ QQ x
+  assume hq,       -- 1. Assume QQ x holds
+  apply h,         -- 2. Try to derive a contradiction using h
+  constructor,     -- 3. Construct an existential statement ∃ x, (PP x ∨ QQ x)
+  right,           -- 4. Choose the right side of the disjunction (QQ x)
+  exact hq,        -- 5. Directly use the assumption QQ x
 end
