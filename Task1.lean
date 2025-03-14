@@ -3,7 +3,6 @@ variables (RR : A → A → Prop)
 variables (PP : A → Prop)  -- Declare PP as a predicate on A
 
 
-
 theorem ex6q02 : ∀ x y : A, x = y → RR x y → RR x x :=
 begin
   -- **Step 1: Introduce variables and assumptions**
@@ -22,32 +21,41 @@ end
 
 
 
+
+
+
+
+
+
+
+
 open classical
 
 theorem ex6q04 : ∀ x y z : A, x ≠ y → (x ≠ z ∨ y ≠ z) :=
 begin
-  -- **Step 1: Introduce variables and assumptions**
-  assume x y z,    -- Assume x, y, z are arbitrary elements of A
-  assume hxy,      -- Assume x ≠ y, i.e., ¬(x = y)
-
-  -- **Step 2: Use classical logic (Law of Excluded Middle)**
-  cases em (x = z) with hxz hxz,  -- `hxz : x = z` or `hxz : x ≠ z`
+  assume x y z,  -- Step 1: Let x, y, and z be arbitrary elements of A
+  assume hxy,    -- Step 2: Assume x ≠ y, which means ¬(x = y)
+  cases em (x = z) with hxz hxz,  -- Step 3: Perform case analysis on (x = z)
   
-  -- **Case 1: Assume `x = z`, need to show `y ≠ z`**
-  right,        -- Choose the right branch of `∨`, goal is to show `y ≠ z`
-  assume hyz,   -- Assume `y = z`, try to derive a contradiction
-
-  -- **Step 3: Derive `x = y` manually**
-  cases hxz,    -- Replace x with z using `hxz : x = z`
-  cases hyz,    -- Replace y with z using `hyz : y = z`
-
-  -- **Derive contradiction**
-  contradiction, -- But `hxy : x ≠ y`, so `x = y` is a contradiction!
-
-  -- **Case 2: Assume `x ≠ z`, directly conclude**
-  left,        -- Choose the left branch of `∨`, goal is to show `x ≠ z`
-  exact hxz,   -- Directly use `hxz : x ≠ z`
+   right, -- Step 4: Choose the right branch of the disjunction (y ≠ z)
+    assume hyz, -- Step 5: Assume y = z and try to derive a contradiction
+    apply hxy, -- Step 6: Goal is to prove x = y
+    rewrite hxz,  -- Step 7: Substitute x = z
+    rewrite hyz,  -- Step 8: Substitute y = z, which results in x = y, contradicting hxy
+  
+   left,  -- Step 9: Choose the left branch of the disjunction (x ≠ z)
+    exact hxz,  -- Step 10: Directly use hxz : x ≠ z
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
